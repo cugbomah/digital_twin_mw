@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:latest
+    container_name: digital_twin_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=dtmw
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: psql -U postgres -q -d dtmw -c "SELECT 'ready';"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+  
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=password123
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    
+volumes:
+  redis-data:  
+  db-data:      
