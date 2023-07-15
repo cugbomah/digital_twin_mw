@@ -28,8 +28,22 @@ use super::redis_helper::delete_token_from_redis;
 use super::redis_helper::get_token_from_redis;
 use super::redis_helper::store_token_in_redis;
 use rand::Rng;
+// use std::process::Command;
 
-// const IMAGE: &str = "sandiek/digitalfarm:latest";
+// async fn docker_login() -> &'static str {
+//     let login_command = Command::new("docker")
+//         .args(&["login", "-u", "ugbomah", "-p", "blizzardX9"])
+//         .output()
+//         .expect("Failed to execute the Docker login command.");
+
+//     if login_command.status.success() {
+//         "Docker login successful!"
+//     } else {
+//         let error_output = String::from_utf8_lossy(&login_command.stderr);
+//         println!("Docker login failed: {}", error_output);
+//         "Docker login failed"
+//     }
+// }
 
 //Create a function for creating a docker network
 async fn create_docker_network(network_name: String) -> Result<(), AppError> {
@@ -70,6 +84,10 @@ async fn create_container(
         eprintln!("Error connecting to docker daemon: {:?}", error);
         AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Connection error")
     })?;
+
+    // //Login to docker
+    // let login_response = docker_login().await;
+    // println!("{}", login_response);
 
     // Specify the image you want to run
     let image_name = image_name;

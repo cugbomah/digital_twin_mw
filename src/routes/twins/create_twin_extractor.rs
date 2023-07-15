@@ -10,21 +10,13 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 #[derive(Debug, Validate, Deserialize, Serialize)]
-pub struct ValidateCreateModel {
-    #[validate(required(message = "missing model name"))]
-    pub name: Option<String>,
-    #[validate(required(message = "missing model description"))]
-    pub description: Option<String>,
-    #[validate(required(message = "missing model type id"))]
-    #[serde(rename = "typeId")]
-    pub type_id: Option<i32>,
-    pub picture: Option<String>,
+pub struct ValidateCreateTwin {
     #[serde(rename = "enableDataSharing")]
     pub enable_data_sharing: Option<bool>,
 }
 
 #[async_trait]
-impl<S, B> FromRequest<S, B> for ValidateCreateModel
+impl<S, B> FromRequest<S, B> for ValidateCreateTwin
 where
     B: HttpBody + Send + 'static,
     B::Data: Send,
@@ -36,12 +28,12 @@ where
     async fn from_request(
         req: Request<B>,
         _state: &S,
-    ) -> Result<ValidateCreateModel, Self::Rejection> {
+    ) -> Result<ValidateCreateTwin, Self::Rejection> {
         let Json(model) = req
-            .extract::<Json<ValidateCreateModel>, _>()
+            .extract::<Json<ValidateCreateTwin>, _>()
             .await
             .map_err(|error| {
-                eprintln!("Error extracting new model info: {:?}", error);
+                eprintln!("Error extracting new twin info: {:?}", error);
                 AppError::new(
                     StatusCode::INTERNAL_SERVER_ERROR,
                     "Something went wrong, please try again",

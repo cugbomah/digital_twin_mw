@@ -45,6 +45,7 @@ pub async fn create_model(
                     name: model.name,
                     description: model.description,
                     is_published: model.is_published,
+                    enable_data_sharing: model.enable_data_sharing,
                     owner_id: model.created_by,
                     picture: model.picture,
                 }),

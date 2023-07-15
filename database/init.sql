@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS core_model
     "typeId" integer NOT NULL,
     picture character varying COLLATE pg_catalog."default",
     "isPublished" boolean NOT NULL DEFAULT false,
+    "enableDataSharing" boolean NOT NULL DEFAULT false,
     "createdAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" uuid,
     "updatedAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS core_model_component (
   id uuid NOT NULL,
   name    VARCHAR(64) NOT NULL UNIQUE,
   "componentAlias"    VARCHAR(64),
-  "imageSource"    VARCHAR(64) NOT NULL UNIQUE,
+  "imageSource"    character varying COLLATE pg_catalog."default" NOT NULL UNIQUE,
   "containerPort" integer,
   "isExposed" boolean NOT NULL DEFAULT false,
   "modelId" uuid NOT NULL,
@@ -161,6 +162,7 @@ CREATE TABLE IF NOT EXISTS core_twin
     "twinStatusId" integer NOT NULL DEFAULT 1,
     "networkName" character varying COLLATE pg_catalog."default",
     "twinPort" integer,
+    "enableDataSharing" boolean NOT NULL DEFAULT false,
     "createdAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" uuid NOT NULL,
     "updatedAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -199,7 +201,7 @@ CREATE TABLE IF NOT EXISTS core_twin_component (
   "hostPort" integer,
   "isExposed" boolean NOT NULL DEFAULT false,
   "twinId" uuid NOT NULL,
-  "imageSource" character varying(64) COLLATE pg_catalog."default" NOT NULL,
+  "imageSource" character varying COLLATE pg_catalog."default" NOT NULL,
   "createdAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdBy" uuid,
     "updatedAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -264,6 +266,19 @@ CREATE TABLE IF NOT EXISTS core_user_subscription
         ON DELETE NO ACTION
 );
 
+CREATE TABLE IF NOT EXISTS core_shared_model_data
+(
+    id uuid NOT NULL,
+    "modelId" uuid NOT NULL,
+    "inputData" character varying COLLATE pg_catalog."default",
+    "outputResponse" character varying COLLATE pg_catalog."default",
+    "createdAt" timestamp(6) with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT core_shared_model_data_pkey PRIMARY KEY (id),
+    CONSTRAINT "core_model_fkey" FOREIGN KEY ("modelId")
+        REFERENCES core_model (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
 
 -- CREATE TABLE IF NOT EXISTS core_user_model_policy
 -- (

@@ -15,6 +15,8 @@ pub struct Model {
     pub picture: Option<String>,
     #[sea_orm(column_name = "isPublished")]
     pub is_published: bool,
+    #[sea_orm(column_name = "enableDataSharing")]
+    pub enable_data_sharing: bool,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "createdBy")]
@@ -45,10 +47,10 @@ pub enum Relation {
     CorePolicy,
     #[sea_orm(has_many = "super::core_policy_violation::Entity")]
     CorePolicyViolation,
+    #[sea_orm(has_many = "super::core_shared_model_data::Entity")]
+    CoreSharedModelData,
     #[sea_orm(has_many = "super::core_twin::Entity")]
     CoreTwin,
-    #[sea_orm(has_many = "super::core_user_model_policy::Entity")]
-    CoreUserModelPolicy,
     #[sea_orm(has_many = "super::core_user_subscription::Entity")]
     CoreUserSubscription,
 }
@@ -77,15 +79,15 @@ impl Related<super::core_policy_violation::Entity> for Entity {
     }
 }
 
-impl Related<super::core_twin::Entity> for Entity {
+impl Related<super::core_shared_model_data::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::CoreTwin.def()
+        Relation::CoreSharedModelData.def()
     }
 }
 
-impl Related<super::core_user_model_policy::Entity> for Entity {
+impl Related<super::core_twin::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::CoreUserModelPolicy.def()
+        Relation::CoreTwin.def()
     }
 }
 

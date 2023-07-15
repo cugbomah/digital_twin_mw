@@ -5,6 +5,7 @@ use uuid::Uuid;
 use crate::{
     database::{core_model, core_model_component, core_twin, core_user},
     queries::{model_queries, twin_queries},
+    routes::twins::create_twin_extractor::ValidateCreateTwin,
     utilities::{
         app_error::AppError,
         docker_helper::{create_docker_model, remove_docker_model, stop_docker_model},
@@ -90,12 +91,20 @@ pub async fn twin_subscription(
     model: &core_model::Model,
     model_components: Vec<core_model_component::Model>,
     redis_url: RedisConnWrapper,
+    share_data: ValidateCreateTwin,
 ) -> Result<Uuid, AppError> {
     let (response, twin) =
         create_twin_infrastructure(&db, &user, &model, model_components, redis_url.clone()).await?;
 
     let mut twin = twin.into_active_model();
     twin.twin_status_id = Set(2); //Set twin status to "Started"
+
+    if model.enable_data_sharing {
+        if let Some(enable_data_sharing) = share_data.enable_data_sharing {
+            twin.enable_data_sharing = Set(enable_data_sharing);
+        }
+    }
+
     twin_queries::save_active_coretwin(&db, twin.clone()).await?;
 
     let twin_id: Option<uuid::Uuid> = match twin.id.clone().into_value() {

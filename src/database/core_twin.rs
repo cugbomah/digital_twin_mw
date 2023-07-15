@@ -20,6 +20,8 @@ pub struct Model {
     pub network_name: Option<String>,
     #[sea_orm(column_name = "twinPort")]
     pub twin_port: Option<i32>,
+    #[sea_orm(column_name = "enableDataSharing")]
+    pub enable_data_sharing: bool,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTimeWithTimeZone,
     #[sea_orm(column_name = "createdBy")]

@@ -20,6 +20,7 @@ pub struct ResponseModel {
     pub name: String,
     pub description: String,
     pub is_published: bool,
+    pub enable_data_sharing: bool,
     pub owner_id: Option<Uuid>,
     pub picture: Option<String>,
 }

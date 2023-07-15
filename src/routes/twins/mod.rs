@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+pub mod create_twin_extractor;
 pub mod delete_twin;
 pub mod get_all_user_twins;
 pub mod get_one_user_twin;

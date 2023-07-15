@@ -46,6 +46,10 @@ pub async fn create_model(
         new_model.picture = Set(Some(picture));
     }
 
+    if let Some(enable_data_sharing) = model.model_info.enable_data_sharing {
+        new_model.enable_data_sharing = Set(enable_data_sharing);
+    }
+
     let new_model = new_model.insert(&txn).await.map_err(|error| {
         eprintln!("Error saving model: {:?}", error);
         AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Error saving model")

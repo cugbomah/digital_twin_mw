@@ -53,8 +53,6 @@ pub enum Relation {
         on_delete = "NoAction"
     )]
     CoreUser,
-    #[sea_orm(has_many = "super::core_user_model_policy::Entity")]
-    CoreUserModelPolicy,
 }
 
 impl Related<super::core_model::Entity> for Entity {
@@ -84,12 +82,6 @@ impl Related<super::core_twin::Entity> for Entity {
 impl Related<super::core_user::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::CoreUser.def()
-    }
-}
-
-impl Related<super::core_user_model_policy::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::CoreUserModelPolicy.def()
     }
 }
 

@@ -49,8 +49,6 @@ pub enum Relation {
     CoreRole,
     #[sea_orm(has_many = "super::core_twin::Entity")]
     CoreTwin,
-    #[sea_orm(has_many = "super::core_user_model_policy::Entity")]
-    CoreUserModelPolicy,
     #[sea_orm(has_many = "super::core_user_subscription::Entity")]
     CoreUserSubscription,
 }
@@ -82,12 +80,6 @@ impl Related<super::core_role::Entity> for Entity {
 impl Related<super::core_twin::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::CoreTwin.def()
-    }
-}
-
-impl Related<super::core_user_model_policy::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::CoreUserModelPolicy.def()
     }
 }
 

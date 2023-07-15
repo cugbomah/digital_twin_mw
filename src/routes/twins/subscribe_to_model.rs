@@ -17,17 +17,27 @@ use crate::{
     },
 };
 
+use super::create_twin_extractor::ValidateCreateTwin;
+
 pub async fn subscribe(
     Path(model_id): Path<Uuid>,
     Extension(user): Extension<core_user::Model>,
     State(db): State<DatabaseConnection>,
     State(redis_url): State<RedisConnWrapper>,
+    Json(share_twin_data): Json<ValidateCreateTwin>,
 ) -> Result<Json<String>, AppError> {
     let (model, model_components) =
         model_queries::find_pubslished_model_by_id(&db, model_id).await?;
 
-    let twin_id =
-        twin_subscription(&db, &user, &model, model_components, redis_url.clone()).await?;
+    let twin_id = twin_subscription(
+        &db,
+        &user,
+        &model,
+        model_components,
+        redis_url.clone(),
+        share_twin_data,
+    )
+    .await?;
 
     //Use model_id to find latest policy
     let policies = policy_queries::get_policies(&db, model_id, user.id).await?;
